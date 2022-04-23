@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices.ComTypes;
 using System.Text;
+
 namespace CabInvoiceGenerator
 {
    
-   
     public class InvoiceGenerator
     {
-       
+        
         private RideRepository rideRepository;
-       
+        
         private readonly double MINIMUM_COST_PER_KM;
         private readonly int COST_PER_TIME;
         private readonly double MINIMUM_FARE;
@@ -22,7 +23,6 @@ namespace CabInvoiceGenerator
             this.MINIMUM_FARE = 5;
         }
 
-       
         public double CalculateFare(double distance, int time)
         {
             double totalFare = 0;
@@ -42,6 +42,58 @@ namespace CabInvoiceGenerator
                 }
             }
             return Math.Max(totalFare, MINIMUM_FARE);
+        }
+        
+        public InvoiceSummery CalculateFare(Ride[] rides)
+        {
+            double totalFare = 0;
+           
+            try
+            {
+               
+                foreach (Ride ride in rides)
+                {
+                    totalFare += this.CalculateFare(ride.distance, ride.time);
+                }
+            }
+           
+            catch (CabInvoiceException)
+            {
+                if (rides == null)
+                {
+                    throw new CabInvoiceException(CabInvoiceException.ExceptionType.NULL_RIDES, "no rides found");
+                }
+            }
+           
+            return new InvoiceSummery(rides.Length, totalFare);
+        }
+       
+        public void AddRides(string userId, Ride[] rides)
+        {
+            try
+            {
+                rideRepository.AddRide(userId, rides);
+            }
+            catch (CabInvoiceException)
+            {
+                if (rides == null)
+                {
+                    throw new CabInvoiceException(CabInvoiceException.ExceptionType.NULL_RIDES, "Null rides");
+                }
+            }
+        }
+       
+       
+        public InvoiceSummery GetInvoiceSummary(string userId)
+        {
+            try
+            {
+                return this.CalculateFare(rideRepository.GetRides(userId));
+            }
+            catch
+            {
+                throw new CabInvoiceException(CabInvoiceException.ExceptionType.INVALID_USER_ID, "Invalid user id");
+            }
         }
     }
 }
