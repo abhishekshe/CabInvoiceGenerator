@@ -1,28 +1,51 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices.ComTypes;
 using System.Text;
-
 namespace CabInvoiceGenerator
 {
+   
    
     public class InvoiceGenerator
     {
         
         private RideRepository rideRepository;
+        RideType rideType;
         
         private readonly double MINIMUM_COST_PER_KM;
         private readonly int COST_PER_TIME;
         private readonly double MINIMUM_FARE;
 
-        public InvoiceGenerator()
+        
+        public InvoiceGenerator(RideType rideType)
         {
             this.rideRepository = new RideRepository();
-            this.MINIMUM_COST_PER_KM = 10;
-            this.COST_PER_TIME = 1;
-            this.MINIMUM_FARE = 5;
+            this.rideType = rideType;
+            try
+            {
+                if (this.rideType.Equals(RideType.NORMAL))
+                {
+                    this.MINIMUM_COST_PER_KM = 10;
+                    this.COST_PER_TIME = 1;
+                    this.MINIMUM_FARE = 5;
+                }
+                if (this.rideType.Equals(RideType.PREMIUM))
+                {
+                    this.MINIMUM_COST_PER_KM = 15;
+                    this.COST_PER_TIME = 2;
+                    this.MINIMUM_FARE = 20;
+                }
+            }
+            catch (CabInvoiceException)
+            {
+                throw new CabInvoiceException(CabInvoiceException.ExceptionType.INVALID_RIDETYPE, "invalid ride type");
+            }
+
+
         }
 
+       
         public double CalculateFare(double distance, int time)
         {
             double totalFare = 0;
@@ -43,11 +66,11 @@ namespace CabInvoiceGenerator
             }
             return Math.Max(totalFare, MINIMUM_FARE);
         }
-        
+  
         public InvoiceSummery CalculateFare(Ride[] rides)
         {
             double totalFare = 0;
-           
+            
             try
             {
                
@@ -56,7 +79,7 @@ namespace CabInvoiceGenerator
                     totalFare += this.CalculateFare(ride.distance, ride.time);
                 }
             }
-           
+         
             catch (CabInvoiceException)
             {
                 if (rides == null)
@@ -64,10 +87,10 @@ namespace CabInvoiceGenerator
                     throw new CabInvoiceException(CabInvoiceException.ExceptionType.NULL_RIDES, "no rides found");
                 }
             }
-           
+            
             return new InvoiceSummery(rides.Length, totalFare);
         }
-       
+      
         public void AddRides(string userId, Ride[] rides)
         {
             try
@@ -83,7 +106,6 @@ namespace CabInvoiceGenerator
             }
         }
        
-       
         public InvoiceSummery GetInvoiceSummary(string userId)
         {
             try
@@ -96,4 +118,5 @@ namespace CabInvoiceGenerator
             }
         }
     }
+
 }
