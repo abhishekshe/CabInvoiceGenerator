@@ -1,0 +1,5 @@
+C:\Users\dell\source\repos\CavInvoiceGenerator\CavInvoiceGenerator\obj\Debug\net6.0\CavInvoiceGenerator.csproj.AssemblyReference.cache
+C:\Users\dell\source\repos\CavInvoiceGenerator\CavInvoiceGenerator\obj\Debug\net6.0\CavInvoiceGenerator.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\dell\source\repos\CavInvoiceGenerator\CavInvoiceGenerator\obj\Debug\net6.0\CavInvoiceGenerator.AssemblyInfoInputs.cache
+C:\Users\dell\source\repos\CavInvoiceGenerator\CavInvoiceGenerator\obj\Debug\net6.0\CavInvoiceGenerator.AssemblyInfo.cs
+C:\Users\dell\source\repos\CavInvoiceGenerator\CavInvoiceGenerator\obj\Debug\net6.0\CavInvoiceGenerator.csproj.CoreCompileInputs.cache
